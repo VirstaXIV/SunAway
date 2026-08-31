@@ -8,12 +8,14 @@ public class ConfigWindow : Window
 {
     private readonly Configuration _config;
     private readonly SunSuppressor _suppressor;
+    private readonly LabWindow _labWindow;
 
-    public ConfigWindow(Configuration config, SunSuppressor suppressor)
+    public ConfigWindow(Configuration config, SunSuppressor suppressor, LabWindow labWindow)
         : base("SunAway###SunAwayConfig")
     {
         _config = config;
         _suppressor = suppressor;
+        _labWindow = labWindow;
 
         Flags = ImGuiWindowFlags.AlwaysAutoResize;
     }
@@ -47,5 +49,11 @@ public class ConfigWindow : Window
         ImGui.TextWrapped("While you are inside a housing interior, SunAway turns off the game's " +
                           "glare so the sun stops shining through the walls. Your graphics settings " +
                           "are restored as soon as you step outside.");
+
+        ImGui.Separator();
+        if (ImGui.Button("Open Env Lab"))
+            _labWindow.Toggle();
+        ImGui.SameLine();
+        ImGui.TextDisabled("find what actually draws the sun");
     }
 }
