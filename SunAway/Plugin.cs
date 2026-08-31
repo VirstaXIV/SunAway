@@ -31,8 +31,8 @@ public sealed class Plugin : IDalamudPlugin
     public Plugin()
     {
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-        Suppressor = new SunSuppressor(Configuration);
         Lab = new EnvLab();
+        Suppressor = new SunSuppressor(Configuration, Lab);
 
         _labWindow = new LabWindow(Lab);
         _configWindow = new ConfigWindow(Configuration, Suppressor, _labWindow);
@@ -92,7 +92,7 @@ public sealed class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.OpenMainUi -= ToggleConfigUi;
 
         WindowSystem.RemoveAllWindows();
-        Lab.Dispose();
         Suppressor.Dispose();
+        Lab.Dispose();
     }
 }

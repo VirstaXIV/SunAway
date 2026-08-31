@@ -29,31 +29,42 @@ public class ConfigWindow : Window
             _config.Save();
         }
 
-        var alsoRepresentation = _config.AlsoDisableGlareRepresentation;
-        if (ImGui.Checkbox("Also disable glare representation", ref alsoRepresentation))
+        var suppressGlare = _config.SuppressGlare;
+        if (ImGui.Checkbox("Also turn off glare while indoors", ref suppressGlare))
         {
-            _config.AlsoDisableGlareRepresentation = alsoRepresentation;
+            _config.SuppressGlare = suppressGlare;
             _config.Save();
-            if (_suppressor.IsSuppressed)
+        }
+
+        if (_config.SuppressGlare)
+        {
+            ImGui.Indent();
+            var alsoRepresentation = _config.AlsoDisableGlareRepresentation;
+            if (ImGui.Checkbox("Include glare representation", ref alsoRepresentation))
             {
+                _config.AlsoDisableGlareRepresentation = alsoRepresentation;
+                _config.Save();
                 // Re-apply so the new choice takes effect immediately.
-                _suppressor.Restore();
+                _suppressor.RestoreGlare();
             }
+
+            ImGui.Unindent();
         }
 
         ImGui.Separator();
         ImGui.TextDisabled($"Currently: {(_suppressor.IsIndoors ? "indoors" : "outdoors")}, " +
-                           $"glare {(_suppressor.IsSuppressed ? "suppressed" : "untouched")}");
+                           $"sun {(_suppressor.IsSunRemoved ? "removed" : "untouched")}" +
+                           (_suppressor.IsGlareSuppressed ? ", glare suppressed" : ""));
 
         ImGui.Spacing();
-        ImGui.TextWrapped("While you are inside a housing interior, SunAway turns off the game's " +
-                          "glare so the sun stops shining through the walls. Your graphics settings " +
-                          "are restored as soon as you step outside.");
+        ImGui.TextWrapped("While you are inside a housing interior, SunAway hides the sky's " +
+                          "celestial rendering (sun included) so the sun stops shining through " +
+                          "the walls. Everything is back to normal the moment you step outside.");
 
         ImGui.Separator();
         if (ImGui.Button("Open Env Lab"))
             _labWindow.Toggle();
         ImGui.SameLine();
-        ImGui.TextDisabled("find what actually draws the sun");
+        ImGui.TextDisabled("poke the environment state directly");
     }
 }

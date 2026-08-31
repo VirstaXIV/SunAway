@@ -9,14 +9,24 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Environment;
 namespace SunAway;
 
 /// <summary>
-/// Forces chosen EnvState float offsets to zero every frame, for hunting down
-/// which fields draw the sun. Preferred mechanism is the same EnvStateCopy hook
-/// Ktisis uses (the game recomputes EnvState from weather data each frame, so
-/// overrides must be applied after that copy); if the signature breaks, falls
-/// back to writing on every framework tick, which usually still wins the frame.
+/// Applies SunAway's EnvState overrides every frame: the confirmed sun removal
+/// (SkyVisibility = 0 while indoors) plus the lab's experimental zeroed offsets.
+/// Preferred mechanism is the same EnvStateCopy hook Ktisis uses (the game
+/// recomputes EnvState from weather data each frame, so overrides must be
+/// applied after that copy); if the signature breaks, falls back to writing on
+/// every framework tick, which usually still wins the frame.
 /// </summary>
 public sealed unsafe class EnvLab : IDisposable
 {
+    /// <summary>EnvState offset of the fog block's SkyVisibility — zeroing it removes
+    /// the sun (confirmed in-game with the lab, 2026-08-30).</summary>
+    public const int SkyVisibilityOffset = 0xE4;
+
+    /// <summary>While true, SkyVisibility is forced to 0 each frame. Set from the
+    /// suppressor's tick (enabled && indoors); nothing to restore — the game
+    /// recomputes EnvState every frame.</summary>
+    public bool SuppressSun { get; set; }
+
     private readonly HashSet<int> _zeroOffsets = [];
     private int[] _snapshot = [];
 
@@ -98,6 +108,9 @@ public sealed unsafe class EnvLab : IDisposable
 
     private void Apply(byte* state)
     {
+        if (SuppressSun)
+            *(float*)(state + SkyVisibilityOffset) = 0f;
+
         // _snapshot is an immutable array swapped on change, so the render-thread
         // detour never races the UI thread mutating the set.
         var offsets = _snapshot;
