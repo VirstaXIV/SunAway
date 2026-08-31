@@ -8,6 +8,19 @@ sun from rendering through the walls and windows. The game recomputes the
 environment state each frame, so everything is back to normal the instant you
 step outside, disable the plugin, or unload it — there is nothing to restore.
 
+## Installation
+
+1. In game, open Dalamud settings with `/xlsettings`.
+2. Go to the **Experimental** tab and find **Custom Plugin Repositories**.
+3. Add the following URL and click the + button, then save:
+
+   ```
+   https://raw.githubusercontent.com/VirstaXIV/SunAway/master/repo.json
+   ```
+
+4. Open the plugin installer with `/xlplugins`, search for **SunAway**, and
+   install it.
+
 ## Usage
 
 - `/sunaway` — open the settings window
