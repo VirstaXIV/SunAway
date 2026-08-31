@@ -1,0 +1,32 @@
+[
+  {
+    "Author": "Virsta",
+    "Name": "SunAway",
+    "InternalName": "SunAway",
+    "AssemblyVersion": "0.3.0.0",
+    "MinimumDalamudVersion": "14.0.0",
+    "Description": "Automatically turns off the game's glare while you are inside a housing interior, so the sun stops blasting through the walls. Your graphics settings are restored the moment you step back outside.",
+    "ApplicableVersion": "any",
+    "RepoUrl": "https://github.com/VirstaXIV/SunAway",
+    "Tags": [
+      "sun",
+      "glare",
+      "indoors",
+      "housing",
+      "lighting"
+    ],
+    "DalamudApiLevel": 15,
+    "LoadRequiredState": 0,
+    "LoadSync": false,
+    "CanUnloadAsync": false,
+    "LoadPriority": 0,
+    "IconUrl": "https://raw.githubusercontent.com/VirstaXIV/SunAway/master/images/icon.png",
+    "Punchline": "Removes the sun while you're indoors.",
+    "AcceptsFeedback": true,
+    "LastUpdate": 1788138187,
+    "DownloadCount": 0,
+    "DownloadLinkInstall": "https://github.com/VirstaXIV/SunAway/releases/latest/download/latest.zip",
+    "DownloadLinkUpdate": "https://github.com/VirstaXIV/SunAway/releases/latest/download/latest.zip",
+    "DownloadLinkTesting": "https://github.com/VirstaXIV/SunAway/releases/download/v0.3.0/latest.zip"
+  }
+]

@@ -9,6 +9,7 @@
     <Punchline>Removes the sun while you're indoors.</Punchline>
     <Description>Automatically turns off the game's glare while you are inside a housing interior, so the sun stops blasting through the walls. Your graphics settings are restored the moment you step back outside.</Description>
     <RepoUrl>https://github.com/VirstaXIV/SunAway</RepoUrl>
+    <IconUrl>https://raw.githubusercontent.com/VirstaXIV/SunAway/master/images/icon.png</IconUrl>
     <PackageProjectUrl>https://github.com/VirstaXIV/SunAway</PackageProjectUrl>
     <Tags>sun;glare;indoors;housing;lighting</Tags>
     <IsPackable>false</IsPackable>
