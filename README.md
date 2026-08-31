@@ -34,8 +34,6 @@ signature Ktisis uses) so it lands after the game rebuilds the environment
 state from weather data; if the signature ever breaks, it falls back to writing
 on every framework tick.
 
-Caveat: the same switch also hides the moon and stars indoors at night.
-
 ## Building
 
 Requires the Dalamud dev libraries (`~/.xlcore/dalamud/Hooks/dev` on Linux via
