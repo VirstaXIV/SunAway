@@ -29,8 +29,6 @@ public class ConfigWindow : Window
         ImGui.Separator();
         ImGui.TextDisabled($"Currently: {(_remover.IsIndoors ? "indoors" : "outdoors")}, " +
                            $"sun {(_remover.IsSunRemoved ? "removed" : "untouched")}");
-        if (!_remover.HookActive)
-            ImGui.TextDisabled($"Hook fallback active ({_remover.HookError})");
 
         ImGui.Spacing();
         ImGui.TextWrapped("While you are inside a housing interior, SunAway hides the sky's " +

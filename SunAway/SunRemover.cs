@@ -25,8 +25,6 @@ public sealed unsafe class SunRemover : IDisposable
 
     public bool IsIndoors { get; private set; }
     public bool IsSunRemoved => _suppress;
-    public bool HookActive => _copyHook is { IsEnabled: true };
-    public string? HookError { get; private set; }
 
     private delegate nint EnvStateCopyDelegate(nint dest, nint src);
 
@@ -37,33 +35,20 @@ public sealed unsafe class SunRemover : IDisposable
     {
         _config = config;
 
-        try
-        {
-            Plugin.GameInterop.InitializeFromAttributes(this);
-            if (_copyHook == null)
-                throw new InvalidOperationException("EnvStateCopy signature not found");
+        Plugin.GameInterop.InitializeFromAttributes(this);
+        if (_copyHook != null)
             _copyHook.Enable();
-        }
-        catch (Exception e)
-        {
-            HookError = e.Message;
-            Plugin.Log.Warning($"EnvStateCopy hook unavailable ({e.Message}); falling back to per-tick writes.");
-        }
+        else
+            Plugin.Log.Warning("EnvStateCopy signature not found; falling back to per-tick writes.");
 
         Plugin.Framework.Update += OnUpdate;
     }
 
     private void OnUpdate(IFramework framework)
     {
-        var indoors = false;
-        if (Plugin.ClientState.IsLoggedIn)
-        {
-            var housing = HousingManager.Instance();
-            indoors = housing != null && housing->IsInside();
-        }
-
-        IsIndoors = indoors;
-        _suppress = _config.Enabled && indoors;
+        var housing = Plugin.ClientState.IsLoggedIn ? HousingManager.Instance() : null;
+        IsIndoors = housing != null && housing->IsInside();
+        _suppress = _config.Enabled && IsIndoors;
 
         if (_copyHook == null && _suppress)
         {

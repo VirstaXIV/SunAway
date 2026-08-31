@@ -13,76 +13,42 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] internal static ICommandManager CommandManager { get; private set; } = null!;
     [PluginService] internal static IFramework Framework { get; private set; } = null!;
     [PluginService] internal static IClientState ClientState { get; private set; } = null!;
-    [PluginService] internal static IChatGui ChatGui { get; private set; } = null!;
     [PluginService] internal static IGameInteropProvider GameInterop { get; private set; } = null!;
     [PluginService] internal static IPluginLog Log { get; private set; } = null!;
 
     private const string CommandName = "/sunaway";
 
-    public Configuration Configuration { get; }
-    public SunRemover Remover { get; }
-
-    public readonly WindowSystem WindowSystem = new("SunAway");
+    private readonly SunRemover _remover;
+    private readonly WindowSystem _windowSystem = new("SunAway");
     private readonly ConfigWindow _configWindow;
 
     public Plugin()
     {
-        Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-        Remover = new SunRemover(Configuration);
+        var configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+        _remover = new SunRemover(configuration);
 
-        _configWindow = new ConfigWindow(Configuration, Remover);
-        WindowSystem.AddWindow(_configWindow);
+        _configWindow = new ConfigWindow(configuration, _remover);
+        _windowSystem.AddWindow(_configWindow);
 
-        PluginInterface.UiBuilder.Draw += WindowSystem.Draw;
-        PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUi;
-        PluginInterface.UiBuilder.OpenMainUi += ToggleConfigUi;
+        PluginInterface.UiBuilder.Draw += _windowSystem.Draw;
+        PluginInterface.UiBuilder.OpenConfigUi += _configWindow.Toggle;
+        PluginInterface.UiBuilder.OpenMainUi += _configWindow.Toggle;
 
-        CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
+        CommandManager.AddHandler(CommandName, new CommandInfo((_, _) => _configWindow.Toggle())
         {
-            HelpMessage = "Open SunAway settings. \"/sunaway on|off|toggle\" switches indoor sun removal.",
+            HelpMessage = "Open SunAway settings.",
         });
-
-        Log.Information("SunAway loaded.");
     }
-
-    private void OnCommand(string command, string args)
-    {
-        switch (args.Trim().ToLowerInvariant())
-        {
-            case "on":
-                SetEnabled(true);
-                break;
-            case "off":
-                SetEnabled(false);
-                break;
-            case "toggle":
-                SetEnabled(!Configuration.Enabled);
-                break;
-            default:
-                ToggleConfigUi();
-                break;
-        }
-    }
-
-    private void SetEnabled(bool enabled)
-    {
-        Configuration.Enabled = enabled;
-        Configuration.Save();
-        ChatGui.Print($"SunAway {(enabled ? "enabled" : "disabled")}.");
-    }
-
-    private void ToggleConfigUi()
-        => _configWindow.Toggle();
 
     public void Dispose()
     {
         CommandManager.RemoveHandler(CommandName);
 
-        PluginInterface.UiBuilder.Draw -= WindowSystem.Draw;
-        PluginInterface.UiBuilder.OpenConfigUi -= ToggleConfigUi;
-        PluginInterface.UiBuilder.OpenMainUi -= ToggleConfigUi;
+        PluginInterface.UiBuilder.Draw -= _windowSystem.Draw;
+        PluginInterface.UiBuilder.OpenConfigUi -= _configWindow.Toggle;
+        PluginInterface.UiBuilder.OpenMainUi -= _configWindow.Toggle;
 
-        WindowSystem.RemoveAllWindows();
-        Remover.Dispose();
+        _windowSystem.RemoveAllWindows();
+        _remover.Dispose();
     }
 }

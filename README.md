@@ -23,8 +23,7 @@ step outside, disable the plugin, or unload it — there is nothing to restore.
 
 ## Usage
 
-- `/sunaway` — open the settings window
-- `/sunaway on` / `off` / `toggle` — switch indoor sun removal
+`/sunaway` opens the settings window — a single on/off checkbox.
 
 ## How it works
 
