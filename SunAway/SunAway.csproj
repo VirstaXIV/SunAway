@@ -4,7 +4,7 @@
     <Author>Virsta</Author>
     <Name>SunAway</Name>
     <MinimumDalamudVersion>14.0.0</MinimumDalamudVersion>
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
     <ApplicableVersion>any</ApplicableVersion>
     <Punchline>Removes the sun while you're indoors.</Punchline>
     <Description>Automatically turns off the game's glare while you are inside a housing interior, so the sun stops blasting through the walls. Your graphics settings are restored the moment you step back outside.</Description>

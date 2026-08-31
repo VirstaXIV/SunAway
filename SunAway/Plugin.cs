@@ -12,7 +12,6 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
     [PluginService] internal static ICommandManager CommandManager { get; private set; } = null!;
     [PluginService] internal static IFramework Framework { get; private set; } = null!;
-    [PluginService] internal static IGameConfig GameConfig { get; private set; } = null!;
     [PluginService] internal static IClientState ClientState { get; private set; } = null!;
     [PluginService] internal static IChatGui ChatGui { get; private set; } = null!;
     [PluginService] internal static IGameInteropProvider GameInterop { get; private set; } = null!;
@@ -21,23 +20,18 @@ public sealed class Plugin : IDalamudPlugin
     private const string CommandName = "/sunaway";
 
     public Configuration Configuration { get; }
-    public SunSuppressor Suppressor { get; }
-    public EnvLab Lab { get; }
+    public SunRemover Remover { get; }
 
     public readonly WindowSystem WindowSystem = new("SunAway");
     private readonly ConfigWindow _configWindow;
-    private readonly LabWindow _labWindow;
 
     public Plugin()
     {
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-        Lab = new EnvLab();
-        Suppressor = new SunSuppressor(Configuration, Lab);
+        Remover = new SunRemover(Configuration);
 
-        _labWindow = new LabWindow(Lab);
-        _configWindow = new ConfigWindow(Configuration, Suppressor, _labWindow);
+        _configWindow = new ConfigWindow(Configuration, Remover);
         WindowSystem.AddWindow(_configWindow);
-        WindowSystem.AddWindow(_labWindow);
 
         PluginInterface.UiBuilder.Draw += WindowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUi;
@@ -45,7 +39,7 @@ public sealed class Plugin : IDalamudPlugin
 
         CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
         {
-            HelpMessage = "Open SunAway settings. \"/sunaway on|off|toggle\" switches indoor sun removal; \"/sunaway lab\" opens the environment lab.",
+            HelpMessage = "Open SunAway settings. \"/sunaway on|off|toggle\" switches indoor sun removal.",
         });
 
         Log.Information("SunAway loaded.");
@@ -63,9 +57,6 @@ public sealed class Plugin : IDalamudPlugin
                 break;
             case "toggle":
                 SetEnabled(!Configuration.Enabled);
-                break;
-            case "lab":
-                _labWindow.Toggle();
                 break;
             default:
                 ToggleConfigUi();
@@ -92,7 +83,6 @@ public sealed class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.OpenMainUi -= ToggleConfigUi;
 
         WindowSystem.RemoveAllWindows();
-        Suppressor.Dispose();
-        Lab.Dispose();
+        Remover.Dispose();
     }
 }
