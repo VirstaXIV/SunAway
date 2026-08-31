@@ -1,6 +1,7 @@
 # SunAway
 
-A tiny Dalamud plugin that removes the sun while you're indoors.
+A tiny Dalamud plugin that gets rid of the void sun — the sun that shines
+through the walls while you're inside a housing interior.
 
 When you enter a housing interior, SunAway zeroes the environment state's
 `SkyVisibility` (EnvState + 0xE4, in the fog block) every frame, which stops the
@@ -33,8 +34,7 @@ signature Ktisis uses) so it lands after the game rebuilds the environment
 state from weather data; if the signature ever breaks, it falls back to writing
 on every framework tick.
 
-Caveat: `SkyVisibility = 0` hides celestial sky rendering as a whole, so at
-night the moon and stars are hidden indoors too.
+Caveat: the same switch also hides the moon and stars indoors at night.
 
 ## Building
 

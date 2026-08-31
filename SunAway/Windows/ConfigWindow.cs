@@ -31,8 +31,8 @@ public class ConfigWindow : Window
                            $"sun {(_remover.IsSunRemoved ? "removed" : "untouched")}");
 
         ImGui.Spacing();
-        ImGui.TextWrapped("While you are inside a housing interior, SunAway hides the sky's " +
-                          "celestial rendering (sun included) so the sun stops shining through " +
-                          "the walls. Everything is back to normal the moment you step outside.");
+        ImGui.TextWrapped("While you are inside a housing interior, SunAway gets rid of the " +
+                          "void sun so it stops shining through the walls. Everything is back " +
+                          "to normal the moment you step outside.");
     }
 }
